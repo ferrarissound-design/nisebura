@@ -90,33 +90,35 @@ class AI {
     const left = f.x < 0;
     const lx = left ? m.x1 : m.x2, dir = left ? 1 : -1;
     const dx = Math.abs(f.x - lx), dy = f.y - m.y;
-    R.x = dir;
-    if (f.state === 'attack' || f.state === 'helpless' || f.state === 'airdodge') {
-      if (f.state === 'attack' && f.move && f.move.name === 'uspec' && c.id === 'volty') return R;
+    // ステージの下に潜らないよう、崖より少し外側を目指す
+    const under = dy > 20 && (f.x - lx) * dir > -8 * f.scale;
+    const tx = dy > 30 ? lx - dir * 34 * f.scale : lx + dir * 40;
+    R.x = Math.abs(tx - f.x) < 8 ? 0 : sign(tx - f.x);
+    if (f.state === 'attack' || f.state === 'helpless' || f.state === 'airdodge' || f.state === 'hitstun') {
+      if (under) R.x = -dir;
       return R;
     }
-    if (f.state === 'hitstun') return R;
     // ジャンプ
     if (f.jumpsLeft > 0 && f.vy > -2 && (dy > -70 || dx > 260)) {
       if (this.jcd > 0) this.jcd--; else { R.j = true; this.jcd = 8; return R; }
     }
     // 横必殺で距離を稼ぐ
-    if (c.sideRecover && !f.usedOnce.side && f.jumpsLeft === 0 && dx > 200 && dy < 120 && dy > -200) {
+    if (c.sideRecover && !f.usedOnce.side && f.jumpsLeft === 0 && dx > 200 && dy < 120 && dy > -200 && !under) {
       this.press([{ x: dir, b: true, n: 2 }, { x: dir, n: 20 }]);
       return R;
     }
     // 上必殺
     const need = dy + 40 * f.scale;
     if (f.jumpsLeft === 0 && f.vy > -1 && (need > c.upReach * 0.55 || dy > 0 || (dx < 120 && dy > -30))) {
+      if (under && dy < c.upReach * 0.8) { R.x = -dir; return R; }
       if (c.id === 'volty') {
-        const tx = lx + dir * 10, ty = m.y - 30;
-        let vx = tx - f.x, vy = ty - (f.y - 40);
+        const ty = m.y - 30, tx2 = under ? lx - dir * 60 : lx + dir * 10;
+        const vx = tx2 - f.x, vy = ty - (f.y - 40);
         const L = Math.hypot(vx, vy) || 1;
         this.press([{ y: -1, b: true, n: 2 }, { x: vx / L, y: vy / L, n: 12 }]);
-      } else this.press([{ x: dir * 0.3, y: -1, b: true, n: 2 }, { x: dir, n: 30 }]);
+      } else this.press([{ x: under ? -dir * 0.4 : dir * 0.3, y: -1, b: true, n: 2 }, { x: under ? -dir : dir, n: 12 }, { x: dir, n: 20 }]);
       return R;
     }
-    // ガケが近い時は待つ
     return R;
   }
   onLedge() {
@@ -220,6 +222,9 @@ class AI {
       if (adx > 60 && adx < 260 && Math.random() < 0.02 + this.k * 0.02) { this.press([{ j: true, n: 1 }, { x: dir, n: 5 }]); return R; }
     } else {
       if (adx > 30) R.x = dir;
+      // 空中で深追いしすぎない
+      const nx = f.x + R.x * 80;
+      if ((nx < m.x1 || nx > m.x2) && !(this.level >= 6 && f.jumpsLeft > 0 && f.y < -60 && Math.random() < 0.5)) R.x = -sign(f.x);
       if (dy > 60 && f.vy > -1 && !f.fastfall && Math.random() < 0.2) R.y = 1;
       if (dy < -60 && f.jumpsLeft > 0 && f.vy > 0 && Math.random() < 0.1) R.j = true;
     }
@@ -287,8 +292,8 @@ class AI {
       case 'nair': this.press([{ a: true, n: 2 }]); break;
       case 'fair': this.press([{ x: f.facing, a: true, n: 2 }]); break;
       case 'bair': this.press([{ x: -f.facing, a: true, n: 2 }]); break;
-      case 'uair': this.press([{ y: -1, a: true, n: 2 }]); break;
-      case 'dair': this.press([{ y: 1, a: true, n: 2 }]); break;
+      case 'uair': this.press([{ y: -0.6, a: true, n: 2 }]); break;
+      case 'dair': this.press([{ y: 0.55, a: true, n: 2 }]); break;
     }
   }
 }

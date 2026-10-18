@@ -200,7 +200,7 @@ class Battle {
     if (el === EL.elec) this.sfx('zap');
     if (dmg >= 6) this.shake(Math.min(2 + dmg * 0.55, 13));
     if (kill) {
-      this.shake(20); this.flashA = 0.55; this.flashCol = '#ffffff';
+      this.shake(20); this.flashA = 0.3; this.flashCol = '#ffffff';
       this.killZoom = { f: victim, t: victim.hitlag + 8 };
       const remain = this.fighters.filter((f) => f.stocks > 0 && !f.eliminated).length;
       if (victim.stocks === 1 && remain <= 2 && !this.demo) this.slowmo = 60;
@@ -422,8 +422,9 @@ class Battle {
     const s = clamp(Math.min(W / 1280, H / 720) * 0.92, 0.45 * dpr, 1.5 * dpr);
     const cw = 210 * s, ch = 74 * s, gap = 14 * s;
     const total = n * cw + (n - 1) * gap;
+    const top = Touch.active && Touch.enabled;
     let x = (W - total) / 2;
-    const y = H - ch - 10 * s;
+    const y = top ? 8 * s : H - ch - 10 * s;
     for (const f of this.fighters) {
       const sh = this.hudShake.get(f) || 0;
       const ox = (Math.random() - 0.5) * sh * s, oy = (Math.random() - 0.5) * sh * s;

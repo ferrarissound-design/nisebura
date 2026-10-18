@@ -111,7 +111,7 @@ class FX {
   }
   hitSpark(x, y, dmg, el, dir, big) {
     const n = big ? 14 : clamp(Math.round(dmg * 0.6 + 3), 4, 11);
-    const sz = clamp(dmg * 3 + 18, 22, 80) * (big ? 1.5 : 1);
+    const sz = clamp(dmg * 2.6 + 16, 20, 66) * (big ? 1.25 : 1);
     this.add({ k: 'flash', x, y, r: sz, life: big ? 12 : 7, col: el.c1, L: 1 });
     this.add({ k: 'burst', x, y, r: sz * 1.2, n, a0: rand(0, TAU), life: big ? 12 : 9, c1: el.c1, c2: el.c2, L: 1 });
     if (dmg >= 8) this.add({ k: 'ring', x, y, r: sz * 0.3, r2: sz * 1.4, life: 12, col: el.c2, w: 5, L: 1 });

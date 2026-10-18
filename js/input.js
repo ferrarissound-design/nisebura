@@ -135,17 +135,17 @@ const Touch = {
   layout(w, h) {
     // w,h: CSSピクセル
     const s = clamp(Math.min(w, h) / 380, 0.75, 1.35) * this.sizeMul;
-    const R = 40 * s, r = 30 * s;
-    const bx = w - 24 * s, by = h - 22 * s;
+    const R = 40 * s;
+    const ex = w - Math.max(6, 0), ey = h;
     this.buttons = [
-      { k: 'a', label: '攻撃', x: bx - R * 3.0, y: by - R * 1.15, r: R, col: '#ff5a5a' },
-      { k: 'b', label: '必殺', x: bx - R * 1.05, y: by - R * 2.45, r: R, col: '#5aa8ff' },
-      { k: 'j', label: 'ジャンプ', x: bx - R * 1.05, y: by - R * 0.55, r: R * 0.95, col: '#62e08a' },
-      { k: 's', label: 'ガード', x: bx - R * 3.25, y: by - R * 3.25, r: r, col: '#ffc84a' },
-      { k: 'm', label: 'スマッシュ', x: bx - R * 4.75, y: by - R * 0.9, r: r, col: '#ff9a3c' },
-      { k: 'g', label: 'つかみ', x: bx - R * 1.0, y: by - R * 4.15, r: r * 0.85, col: '#c78bff' },
+      { k: 'j', label: 'ジャンプ', x: ex - 1.2 * R, y: ey - 1.2 * R, r: R * 0.95, col: '#62e08a' },
+      { k: 'a', label: '攻撃', x: ex - 3.4 * R, y: ey - 1.3 * R, r: R, col: '#ff5a5a' },
+      { k: 'b', label: '必殺', x: ex - 1.2 * R, y: ey - 3.5 * R, r: R, col: '#5aa8ff' },
+      { k: 'm', label: 'スマッシュ', x: ex - 5.5 * R, y: ey - 0.95 * R, r: R * 0.72, col: '#ff9a3c' },
+      { k: 's', label: 'ガード', x: ex - 3.5 * R, y: ey - 3.6 * R, r: R * 0.72, col: '#ffc84a' },
+      { k: 'g', label: 'つかみ', x: ex - 1.1 * R, y: ey - 5.45 * R, r: R * 0.62, col: '#c78bff' },
     ];
-    this.pauseBtn = { x: w / 2, y: 26 * s, r: 20 * s };
+    this.pauseBtn = { x: 30 * s, y: 26 * s, r: 18 * s };
     this.stickR = 58 * s;
     this.w = w; this.h = h; this.s = s;
   },

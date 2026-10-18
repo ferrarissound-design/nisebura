@@ -127,9 +127,7 @@ const App = {
     if (this.battle) {
       this.battle.render(ctx, this.W, this.H, this.dpr, { debug: this.settings.debug });
       Touch.draw(ctx, this.dpr);
-    } else if (this.resultBattle && this.screen === 'result') {
-      this.resultBattle.render(ctx, this.W, this.H, this.dpr);
-    } else if (this.demo) {
+    } else if (this.demo && this.screen !== 'result') {
       this.demo.render(ctx, this.W, this.H, this.dpr);
     }
     UI.tickPreviews();

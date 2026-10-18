@@ -316,7 +316,7 @@ const CHARS = [
     type: 'バランス', scale: 1.0, weight: 100,
     st: { walk: 4.2, run: 8.6, dash: 9.6, air: 5.2, airAcc: 0.42, grav: 0.62, fall: 11.5, ffall: 17, jump: 15.6, hop: 10.6, djump: 14.8, jumps: 1, traction: 0.6 },
     prop: { torso: 28, bodyW: 28, head: 15, arm: [14, 14], leg: [17, 17], limbW: 9, handR: 6.8, footR: 7 },
-    el: 'fire', mods: { spd: 1, dmg: 1, kb: 1 },
+    el: 'fire', mods: { spd: 1, dmg: 1.05, kb: 1.02 },
     specials: BLAZE_SPECIALS, normals: BLAZE_NORMALS,
     specialNames: { n: '火炎弾', s: 'バーニングダッシュ', u: '昇炎拳', d: 'フレアバースト' },
     pals: [
@@ -330,9 +330,9 @@ const CHARS = [
     id: 'goldo', name: 'ゴルドー', en: 'GOLDO', title: '岩の巨人',
     desc: '重くて吹っ飛びにくいパワー型。アーマー付きの突進で強引に押し切れ！',
     type: 'パワー', scale: 1.28, weight: 135,
-    st: { walk: 3.0, run: 6.6, dash: 7.6, air: 4.3, airAcc: 0.34, grav: 0.7, fall: 12.5, ffall: 17.5, jump: 15.2, hop: 10.4, djump: 13.6, jumps: 1, traction: 0.65 },
+    st: { walk: 3.2, run: 7.2, dash: 8.0, air: 4.3, airAcc: 0.34, grav: 0.7, fall: 12.5, ffall: 17.5, jump: 15.2, hop: 10.4, djump: 13.6, jumps: 1, traction: 0.65 },
     prop: { torso: 32, bodyW: 44, head: 12, arm: [15, 15], leg: [14, 14], limbW: 12, handR: 11.5, footR: 9 },
-    el: 'rock', mods: { spd: 1.2, dmg: 1.28, kb: 1.04, reach: 1.1 },
+    el: 'rock', mods: { spd: 1.12, dmg: 1.3, kb: 1.05, reach: 1.15 },
     specials: GOLDO_SPECIALS, normals: GOLDO_NORMALS,
     specialNames: { n: '岩石投げ', s: 'ショルダータックル', u: 'ロックジャンプ', d: 'グランドクエイク' },
     throwMods: { bthrow: { kbg: 88 } },
@@ -349,7 +349,7 @@ const CHARS = [
     type: 'スピード', scale: 0.9, weight: 80,
     st: { walk: 5.0, run: 10.6, dash: 11.5, air: 6.0, airAcc: 0.55, grav: 0.72, fall: 13.0, ffall: 19, jump: 15.4, hop: 10.4, djump: 13.4, jumps: 2, traction: 0.7 },
     prop: { torso: 26, bodyW: 21, head: 14.5, arm: [14, 14], leg: [18, 18], limbW: 7.5, handR: 5.6, footR: 6.2 },
-    el: 'wind', mods: { spd: 0.82, dmg: 0.82, kb: 0.96 },
+    el: 'wind', mods: { spd: 0.82, dmg: 0.88, kb: 1.0 },
     specials: MYU_SPECIALS, normals: MYU_NORMALS,
     specialNames: { n: '手裏剣', s: '疾風斬', u: '旋風', d: '変わり身' },
     pals: [
@@ -365,7 +365,7 @@ const CHARS = [
     type: 'シューター', scale: 1.0, weight: 92,
     st: { walk: 3.8, run: 7.2, dash: 8.4, air: 5.4, airAcc: 0.4, grav: 0.46, fall: 8.8, ffall: 13, jump: 14.2, hop: 9.4, djump: 13.2, jumps: 1, traction: 0.5 },
     prop: { torso: 26, bodyW: 30, head: 17, arm: [12.5, 12.5], leg: [14.5, 14.5], limbW: 7, handR: 7.5, footR: 8.5 },
-    el: 'elec', mods: { spd: 1.05, dmg: 0.95, kb: 1.0 },
+    el: 'elec', mods: { spd: 1.05, dmg: 0.97, kb: 1.04 },
     specials: VOLTY_SPECIALS, normals: VOLTY_NORMALS,
     specialNames: { n: 'チャージショット', s: 'スパークウェーブ', u: 'ワープ', d: 'リフレクター' },
     pals: [
@@ -381,7 +381,7 @@ const CHARS = [
     type: 'リーチ', scale: 1.02, weight: 94,
     st: { walk: 4.3, run: 8.8, dash: 9.8, air: 5.0, airAcc: 0.4, grav: 0.6, fall: 11.0, ffall: 16.5, jump: 15.4, hop: 10.4, djump: 14.6, jumps: 1, traction: 0.58 },
     prop: { torso: 27, bodyW: 21, head: 14, arm: [14, 14], leg: [18, 18], limbW: 7, handR: 5.6, footR: 6.2, wlen: 52 },
-    el: 'moon', mods: { spd: 1.0, dmg: 1.0, kb: 1.0 }, sword: true,
+    el: 'moon', mods: { spd: 1.0, dmg: 0.92, kb: 0.98, reach: 0.92 }, sword: true,
     specials: LUNA_SPECIALS, normals: LUNA_NORMALS,
     specialNames: { n: '三日月斬', s: '月光突き', u: 'ムーンサルト', d: '月輪の舞' },
     pals: [

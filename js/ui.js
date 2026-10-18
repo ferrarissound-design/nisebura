@@ -389,6 +389,7 @@ const UI = {
     const nm = document.getElementById('win-name');
     nm.textContent = `${w.tag} ${w.char.name} の勝利！`;
     nm.style.color = w.color;
+    document.getElementById('scr-result').style.setProperty('--wc', shade(w.pal.main, -0.25));
     const tb = document.getElementById('rank');
     let h = '<tr><th>順位</th><th>プレイヤー</th><th>撃墜</th><th>落下</th><th>与ダメ</th><th>最大コンボ</th></tr>';
     res.order.forEach((f, i) => {
@@ -414,7 +415,9 @@ const UI = {
     ctx.fillStyle = g; ctx.fillRect(0, 0, 360, 360);
     // 集中線
     ctx.save(); ctx.translate(180, 200); ctx.rotate(f.anim * 0.004);
-    ctx.fillStyle = 'rgba(255,255,255,0.08)';
+    const rg = ctx.createRadialGradient(0, 0, 20, 0, 0, 175);
+    rg.addColorStop(0, 'rgba(255,255,255,0.14)'); rg.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = rg;
     for (let i = 0; i < 16; i++) { ctx.rotate(TAU / 16); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(300, -14); ctx.lineTo(300, 14); ctx.fill(); }
     ctx.restore();
     const sc = 2.1 / Math.max(1, f.scale * 0.95);

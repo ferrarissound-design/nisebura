@@ -1,7 +1,7 @@
 'use strict';
 // ===== ファイター（状態遷移・物理・攻撃） =====
 const SHIELD_MAX = 50;
-const KB_SPEED = 0.2;     // ふっとばし値 → 初速
+const KB_SPEED = 0.19;    // ふっとばし値 → 初速
 const KB_DECAY = 0.34;    // ふっとび速度の減衰
 const PLAYER_COLORS = ['#ff4a4a', '#3a8cff', '#ffc21a', '#3ad06a'];
 const PLAYER_TAGS = ['1P', '2P', '3P', '4P'];
