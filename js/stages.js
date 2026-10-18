@@ -345,13 +345,23 @@ const STAGES = [
       {
         p: 0.06, y: 60, seed: 6, draw(ctx, W, H, rng) {
           // 火山
+          ctx.save(); ctx.translate(0, 140); ctx.scale(0.75, 0.75);
           ctx.fillStyle = '#2a0c0c';
-          ctx.beginPath(); ctx.moveTo(-700, 500); ctx.lineTo(-120, -160); ctx.lineTo(60, -160); ctx.lineTo(700, 500); ctx.closePath(); ctx.fill();
-          glow(ctx, -30, -170, 220, '#ff6a1a', 0.8);
+          ctx.beginPath(); ctx.moveTo(-800, 600); ctx.lineTo(-130, -160); ctx.lineTo(70, -160); ctx.lineTo(800, 600); ctx.closePath(); ctx.fill();
+          glow(ctx, -30, -170, 260, '#ff6a1a', 0.75);
           ctx.fillStyle = '#ff8a2a';
-          ctx.beginPath(); ctx.moveTo(-110, -158); ctx.lineTo(50, -158); ctx.lineTo(10, -120); ctx.lineTo(-40, -110); ctx.closePath(); ctx.fill();
-          ctx.strokeStyle = '#ff5a1a'; ctx.lineWidth = 6;
-          for (let i = 0; i < 4; i++) { ctx.beginPath(); ctx.moveTo(-40 + i * 20, -140); ctx.quadraticCurveTo(-60 + i * 50, 100, -120 + i * 80, 500); ctx.stroke(); }
+          ctx.beginPath(); ctx.moveTo(-120, -158); ctx.lineTo(60, -158); ctx.lineTo(20, -128); ctx.lineTo(-50, -122); ctx.closePath(); ctx.fill();
+          // 溶岩の筋（細く、うねらせる）
+          ctx.lineCap = 'round';
+          for (let i = 0; i < 3; i++) {
+            const x0 = -60 + i * 40;
+            ctx.strokeStyle = 'rgba(255,110,30,0.75)'; ctx.lineWidth = 5 - i;
+            ctx.beginPath(); ctx.moveTo(x0, -140);
+            let x = x0;
+            for (let y = -100; y <= 420; y += 60) { x += (rng() - 0.5) * 70 + (i - 1) * 18; ctx.lineTo(x, y); }
+            ctx.stroke();
+          }
+          ctx.restore();
         },
         fx(ctx, t, cx, cy, z) {
           // 噴煙

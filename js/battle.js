@@ -352,10 +352,34 @@ class Battle {
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     if (this.flashA > 0) { ctx.globalAlpha = this.flashA; ctx.fillStyle = this.flashCol; ctx.fillRect(0, 0, W, H); ctx.globalAlpha = 1; }
     if (!this.demo) {
+      if (this.cfg.training) this.drawTraining(ctx, W, H);
       this.drawOffscreen(ctx, W, H, base);
       this.drawHUD(ctx, W, H, dpr);
       this.drawBanner(ctx, W, H, dpr);
     }
+  }
+  drawTraining(ctx, W, H) {
+    const s = Math.min(W / 1280, H / 720);
+    const t = this.training || (this.training = { combo: 0, dmg: 0, best: 0, last: null });
+    const dummy = this.fighters.find((f) => f.isCpu);
+    if (dummy) {
+      if (dummy.combo !== t.combo || dummy.percent !== t.lastP) {
+        if (dummy.combo > 0 && dummy.state === 'hitstun') { if (dummy.combo === 1 && t.combo !== 1) t.dmg = 0; t.dmg += Math.max(0, dummy.percent - (t.lastP || 0)); t.combo = dummy.combo; t.best = Math.max(t.best, t.combo); }
+        t.lastP = dummy.percent;
+      }
+    }
+    ctx.save();
+    ctx.font = `800 ${Math.round(15 * s)}px "M PLUS Rounded 1c", sans-serif`;
+    ctx.textAlign = 'left'; ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    const x = 14 * s, y = (Touch.active && Touch.enabled ? 90 : 14) * s;
+    roundRect(ctx, x, y, 220 * s, 66 * s, 8 * s); ctx.fill();
+    ctx.fillStyle = '#fff';
+    ctx.fillText(`トレーニング`, x + 10 * s, y + 20 * s);
+    ctx.fillStyle = '#ffe14a';
+    ctx.fillText(`コンボ ${t.combo}ヒット  ${t.dmg.toFixed(1)}%`, x + 10 * s, y + 40 * s);
+    ctx.fillStyle = '#aaa';
+    ctx.fillText(`最高 ${t.best}ヒット`, x + 10 * s, y + 58 * s);
+    ctx.restore();
   }
   drawRespawnPlat(ctx, f) {
     const y = f.y + 2, x = f.x;
