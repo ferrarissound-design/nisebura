@@ -72,6 +72,54 @@ const url = 'file://' + path.resolve(__dirname, '..', 'index.html');
       await shot('pose-' + cid);
     }
   }
+  if (scen === 'closeup') {
+    // 全キャラの拡大図（待機・攻撃・被弾・空中）と顔アイコン
+    await page.evaluate(() => {
+      App.battle = null; App.demo = null; UI.hide();
+      const cv = document.getElementById('game'); const ctx = cv.getContext('2d');
+      window.__closeup = (palIdx, only) => {
+        ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#4a4e66'; ctx.fillRect(0, 0, cv.width, cv.height);
+        const sts = [['idle', null], ['attack', 'fsmash'], ['hitstun', null], ['air', 'nair']];
+        const list = only ? CHARS.filter((c) => c.id === only) : CHARS;
+        const k = only ? 3.2 : 1.5, dx = only ? 300 : 250, dy = only ? 0 : 290;
+        list.forEach((c, ci) => {
+          sts.forEach(([st, mv], si) => {
+            const f = new Fighter(STUB_BATTLE, 0, c, palIdx, { type: 'pv' }, {});
+            f.x = 0; f.y = 0; f.facing = si === 3 ? -1 : 1; f.grounded = st !== 'air';
+            const m = mv && c.moves[mv];
+            if (m) { f.state = 'attack'; f.move = m; f.moveFrame = m.hb.length ? m.hb[0].f[0] : Math.round(m.dur / 3); } else { f.state = st; f.sf = 5; f.vy = 3; }
+            f.blendT = 99; f.updatePose(true);
+            for (let k = 0; k < 40; k++) { f.anim++; f.updateRibbons(); }
+            const x = only ? 170 + si * dx : 70 + ci * dx + (si % 2) * 120, y = only ? 560 : 250 + Math.floor(si / 2) * dy;
+            ctx.setTransform(k, 0, 0, k, x, y);
+            ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.beginPath(); ctx.ellipse(0, 1, 26, 5, 0, 0, 6.3); ctx.fill();
+            drawFighter(ctx, f);
+          });
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          if (!only) drawPortrait(ctx, c, palIdx, 120 + ci * 250, 62, 100);
+        });
+      };
+    });
+    for (const p of [0, 1, 2, 3]) { await page.evaluate((p) => window.__closeup(p), p); await shot('closeup-' + p); }
+    for (const c of ['blaze', 'goldo', 'myu', 'volty', 'luna']) { await page.evaluate((c) => window.__closeup(0, c), c); await shot('zoom-' + c); }
+  }
+  if (scen === 'faces') {
+    // 顔の拡大（表情ごと）
+    await page.evaluate(() => {
+      App.battle = null; App.demo = null; UI.hide();
+      const cv = document.getElementById('game'); const ctx = cv.getContext('2d');
+      ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = '#4a4e66'; ctx.fillRect(0, 0, cv.width, cv.height);
+      const moods = [{ state: 'idle' }, { state: 'idle', blink: -2 }, { state: 'attack', move: { kind: 'tilt' } }, { state: 'attack', move: { kind: 'smash' } }, { state: 'hitstun' }];
+      CHARS.forEach((c, ci) => moods.forEach((m, mi) => {
+        const f = { char: c, pal: c.pals[0], facing: 1, scale: 1, anim: 30, blink: 100, flash: 0, sf: 0, pts: newPts(), invuln: 0, ...m };
+        solveSkeleton(c.stance, c.prop, 0, 0, 1, 1, f.pts);
+        const k = 128 / (c.prop.head * 2.6);
+        ctx.setTransform(k, 0, 0, k, 90 + mi * 230, 80 + ci * 140); ctx.translate(-f.pts.head.x, -f.pts.head.y);
+        CHAR_DRAW[c.id].head(ctx, f, f.pts, c.prop.head, f.pal, 1);
+      }));
+    });
+    await shot('faces');
+  }
   console.log(errs.length ? errs.join('\n') : 'no errors');
   await browser.close();
 })();
