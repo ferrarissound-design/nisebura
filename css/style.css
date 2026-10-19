@@ -58,7 +58,7 @@ html, body {
 
 /* ---------- タイトル ---------- */
 #scr-title { background: linear-gradient(180deg, rgba(8, 6, 24, 0.15), rgba(8, 6, 24, 0.55)); }
-/* 「大乱闘」の上段＋極太の「ジョーブラザーズ」を2段に組み、白フチ＋外側の黒フチで縁取る */
+/* 「大乱闘」の上段＋極太の「ジョーブラザーズ」を2段に組む。フチは text-shadow の輪で外側だけに付け、濁点など細かい部分を潰さない */
 .logo { --ls: min(13.5vmin, 10.5vw, 130px); position: relative; text-align: center; transform: rotate(-6deg) skewX(-6deg); margin-bottom: 4vh; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.55)); }
 .logo-rays {
   position: absolute; left: 50%; top: 50%; width: calc(var(--ls) * 9); height: calc(var(--ls) * 9); transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
@@ -68,10 +68,72 @@ html, body {
 }
 @keyframes rays { to { transform: translate(-50%, -50%) rotate(360deg); } }
 .logo-top, .logo-main {
-  font-family: var(--display); line-height: 1; color: #16121f;
-  background: linear-gradient(180deg, #5a5470 0%, #24202f 34%, #0d0a14 62%, #2a2536 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: calc(var(--ls) * 0.09) #fff; paint-order: stroke fill;
-  filter: drop-shadow(3px 0 0 #120c18) drop-shadow(-3px 0 0 #120c18) drop-shadow(0 3px 0 #120c18) drop-shadow(0 -3px 0 #120c18);
+  font-family: var(--display); line-height: 1; color: #15111d;
+  text-shadow:
+    0.035em 0.000em 0 #fff,
+    0.032em 0.013em 0 #fff,
+    0.025em 0.025em 0 #fff,
+    0.013em 0.032em 0 #fff,
+    0.000em 0.035em 0 #fff,
+    -0.013em 0.032em 0 #fff,
+    -0.025em 0.025em 0 #fff,
+    -0.032em 0.013em 0 #fff,
+    -0.035em 0.000em 0 #fff,
+    -0.032em -0.013em 0 #fff,
+    -0.025em -0.025em 0 #fff,
+    -0.013em -0.032em 0 #fff,
+    -0.000em -0.035em 0 #fff,
+    0.013em -0.032em 0 #fff,
+    0.025em -0.025em 0 #fff,
+    0.032em -0.013em 0 #fff,
+    0.060em 0.000em 0 #fff,
+    0.055em 0.023em 0 #fff,
+    0.042em 0.042em 0 #fff,
+    0.023em 0.055em 0 #fff,
+    0.000em 0.060em 0 #fff,
+    -0.023em 0.055em 0 #fff,
+    -0.042em 0.042em 0 #fff,
+    -0.055em 0.023em 0 #fff,
+    -0.060em 0.000em 0 #fff,
+    -0.055em -0.023em 0 #fff,
+    -0.042em -0.042em 0 #fff,
+    -0.023em -0.055em 0 #fff,
+    -0.000em -0.060em 0 #fff,
+    0.023em -0.055em 0 #fff,
+    0.042em -0.042em 0 #fff,
+    0.055em -0.023em 0 #fff,
+    0.085em 0.000em 0 #120c18,
+    0.079em 0.033em 0 #120c18,
+    0.060em 0.060em 0 #120c18,
+    0.033em 0.079em 0 #120c18,
+    0.000em 0.085em 0 #120c18,
+    -0.033em 0.079em 0 #120c18,
+    -0.060em 0.060em 0 #120c18,
+    -0.079em 0.033em 0 #120c18,
+    -0.085em 0.000em 0 #120c18,
+    -0.079em -0.033em 0 #120c18,
+    -0.060em -0.060em 0 #120c18,
+    -0.033em -0.079em 0 #120c18,
+    -0.000em -0.085em 0 #120c18,
+    0.033em -0.079em 0 #120c18,
+    0.060em -0.060em 0 #120c18,
+    0.079em -0.033em 0 #120c18,
+    0.110em 0.000em 0 #120c18,
+    0.102em 0.042em 0 #120c18,
+    0.078em 0.078em 0 #120c18,
+    0.042em 0.102em 0 #120c18,
+    0.000em 0.110em 0 #120c18,
+    -0.042em 0.102em 0 #120c18,
+    -0.078em 0.078em 0 #120c18,
+    -0.102em 0.042em 0 #120c18,
+    -0.110em 0.000em 0 #120c18,
+    -0.102em -0.042em 0 #120c18,
+    -0.078em -0.078em 0 #120c18,
+    -0.042em -0.102em 0 #120c18,
+    -0.000em -0.110em 0 #120c18,
+    0.042em -0.102em 0 #120c18,
+    0.078em -0.078em 0 #120c18,
+    0.102em -0.042em 0 #120c18;
 }
 .logo-top { font-size: calc(var(--ls) * 0.62); letter-spacing: 0.04em; margin: 0 0 calc(var(--ls) * -0.06) calc(var(--ls) * -2.6); }
 .logo-main { font-size: var(--ls); letter-spacing: -0.02em; white-space: nowrap; }
