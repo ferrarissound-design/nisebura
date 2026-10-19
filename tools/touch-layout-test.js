@@ -19,7 +19,7 @@ for (const [w, h] of sizes) {
   for (const scale of [0.85, 1, 1.15, 1.3]) {
     Touch.sizeMul = scale;
     Touch.layout(w, h);
-    assert.deepEqual(Touch.buttons.map((b) => b.k), labels);
+    assert.deepEqual(Array.from(Touch.buttons, (b) => b.k), labels);
     assert(Touch.stickHome.x - Touch.stickR >= 0);
     assert(Touch.stickHome.y + Touch.stickR <= h);
     for (const b of Touch.buttons) {
