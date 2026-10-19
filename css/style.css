@@ -58,13 +58,24 @@ html, body {
 
 /* ---------- タイトル ---------- */
 #scr-title { background: linear-gradient(180deg, rgba(8, 6, 24, 0.15), rgba(8, 6, 24, 0.55)); }
-.logo { text-align: center; transform: rotate(-4deg); margin-bottom: 4vh; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.5)); }
-.logo-main {
-  font-family: var(--display); font-size: clamp(54px, 15vmin, 150px); line-height: 1; letter-spacing: 0.02em;
-  color: #fff; -webkit-text-stroke: 6px #120c18; paint-order: stroke fill;
-  background: linear-gradient(180deg, #fff 30%, #ffd24a 31%, #ff6a2a 80%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+/* 「大乱闘」の上段＋極太の「ジョーブラザーズ」を2段に組み、白フチ＋外側の黒フチで縁取る */
+.logo { --ls: min(13.5vmin, 10.5vw, 130px); position: relative; text-align: center; transform: rotate(-6deg) skewX(-6deg); margin-bottom: 4vh; filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.55)); }
+.logo-rays {
+  position: absolute; left: 50%; top: 50%; width: calc(var(--ls) * 9); height: calc(var(--ls) * 9); transform: translate(-50%, -50%); z-index: -1; pointer-events: none;
+  background: radial-gradient(circle, rgba(255, 250, 220, 0.85), rgba(255, 210, 120, 0.35) 9%, transparent 22%), repeating-conic-gradient(from 0deg, rgba(255, 236, 170, 0.55) 0deg 4deg, transparent 4deg 18deg);
+  -webkit-mask-image: radial-gradient(circle, #000 4%, transparent 52%); mask-image: radial-gradient(circle, #000 4%, transparent 52%);
+  animation: rays 40s linear infinite;
 }
-.logo-main span { background: linear-gradient(180deg, #fff 30%, #6ae8ff 31%, #3a6aff 80%); -webkit-background-clip: text; background-clip: text; }
+@keyframes rays { to { transform: translate(-50%, -50%) rotate(360deg); } }
+.logo-top, .logo-main {
+  font-family: var(--display); line-height: 1; color: #16121f;
+  background: linear-gradient(180deg, #5a5470 0%, #24202f 34%, #0d0a14 62%, #2a2536 100%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  -webkit-text-stroke: calc(var(--ls) * 0.09) #fff; paint-order: stroke fill;
+  filter: drop-shadow(3px 0 0 #120c18) drop-shadow(-3px 0 0 #120c18) drop-shadow(0 3px 0 #120c18) drop-shadow(0 -3px 0 #120c18);
+}
+.logo-top { font-size: calc(var(--ls) * 0.62); letter-spacing: 0.04em; margin: 0 0 calc(var(--ls) * -0.06) calc(var(--ls) * -2.6); }
+.logo-main { font-size: var(--ls); letter-spacing: -0.02em; white-space: nowrap; }
+.logo-main .big { font-size: 1.18em; }
 .logo-sub {
   display: inline-block; font-family: var(--display); font-size: clamp(16px, 4vmin, 30px); margin-top: 6px;
   background: #120c18; padding: 4px 18px; transform: skewX(-12deg); color: #ffe14a; border: 3px solid #fff;
