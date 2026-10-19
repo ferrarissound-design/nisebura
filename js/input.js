@@ -133,20 +133,25 @@ const Touch = {
     canvas.addEventListener('lostpointercapture', (e) => this.up(e), opt);
   },
   layout(w, h) {
-    // w,h: CSSピクセル
-    const s = clamp(Math.min(w, h) / 380, 0.75, 1.35) * this.sizeMul;
-    const R = 40 * s;
-    const ex = w - Math.max(6, 0), ey = h;
+    // 6アクションを右下2段に配置。小画面や「特大」設定でもスティックと重ねない。
+    const desired = clamp(Math.min(w, h) / 390, 0.82, 1.18) * this.sizeMul;
+    const s = Math.max(0.65, Math.min(desired, (w - 28) / 315));
+    const R = 27 * s;
+    const dx = R * 2.28, dy = R * 2.3;
+    const right = w - 14 * s - R, bottom = h - 18 * s - R;
+    const cols = [right - dx * 2, right - dx, right];
+    const top = bottom - dy;
     this.buttons = [
-      { k: 'j', label: 'ジャンプ', x: ex - 1.2 * R, y: ey - 1.2 * R, r: R * 0.95, col: '#62e08a' },
-      { k: 'a', label: '攻撃', x: ex - 3.4 * R, y: ey - 1.3 * R, r: R, col: '#ff5a5a' },
-      { k: 'b', label: '必殺', x: ex - 1.2 * R, y: ey - 3.5 * R, r: R, col: '#5aa8ff' },
-      { k: 'm', label: 'スマッシュ', x: ex - 5.5 * R, y: ey - 0.95 * R, r: R * 0.72, col: '#ff9a3c' },
-      { k: 's', label: 'ガード', x: ex - 3.5 * R, y: ey - 3.6 * R, r: R * 0.72, col: '#ffc84a' },
-      { k: 'g', label: 'つかみ', x: ex - 1.1 * R, y: ey - 5.45 * R, r: R * 0.62, col: '#c78bff' },
+      { k: 'j', label: 'ジャンプ', x: cols[2], y: bottom, r: R, col: '#62e08a' },
+      { k: 'a', label: '攻撃', x: cols[1], y: bottom, r: R, col: '#ff5a5a' },
+      { k: 'b', label: '必殺', x: cols[2], y: top, r: R * 0.96, col: '#5aa8ff' },
+      { k: 'm', label: 'スマッシュ', x: cols[0], y: bottom, r: R * 0.88, col: '#ff9a3c' },
+      { k: 's', label: 'ガード', x: cols[1], y: top, r: R * 0.88, col: '#ffc84a' },
+      { k: 'g', label: 'つかみ', x: cols[0], y: top, r: R * 0.84, col: '#c78bff' },
     ];
-    this.pauseBtn = { x: 30 * s, y: 26 * s, r: 18 * s };
-    this.stickR = 58 * s;
+    this.stickR = 48 * s;
+    this.stickHome = { x: this.stickR * 1.5, y: h - this.stickR * 1.55 };
+    this.pauseBtn = { x: 27 * s, y: 27 * s, r: 15 * s };
     this.w = w; this.h = h; this.s = s;
   },
   pos(e) {
@@ -169,14 +174,16 @@ const Touch = {
     const [x, y] = this.pos(e);
     const pb = this.pauseBtn;
     if (pb && Math.hypot(x - pb.x, y - pb.y) < pb.r * 1.4) { if (this.onPause) this.onPause(); return; }
+    // 小型化したボタンの端を押しても移動スティックに誤判定させない。
+    const b = this.hitBtn(x, y);
+    if (b) { this.ptrs.set(e.pointerId, b.k); return; }
     if (x < this.w * 0.42 && this.stick.id === null) {
       const st = this.stick;
       st.id = e.pointerId; st.ox = x; st.oy = y; st.x = x; st.y = y;
       this.ptrs.set(e.pointerId, 'stick');
       return;
     }
-    const b = this.hitBtn(x, y);
-    this.ptrs.set(e.pointerId, b ? b.k : null);
+    this.ptrs.set(e.pointerId, null);
   },
   move(e) {
     if (!this.ptrs.has(e.pointerId)) return;
@@ -219,11 +226,12 @@ const Touch = {
     ctx.save();
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const held = new Set(this.ptrs.values());
-    // スティック
     const st = this.stick;
-    const sx = st.id !== null ? st.ox : this.stickR * 1.6, sy = st.id !== null ? st.oy : this.h - this.stickR * 1.5;
-    ctx.globalAlpha = st.id !== null ? 0.5 : 0.25;
-    ctx.fillStyle = '#000'; ctx.strokeStyle = '#fff'; ctx.lineWidth = 3;
+    const sx = st.id !== null ? st.ox : this.stickHome.x;
+    const sy = st.id !== null ? st.oy : this.stickHome.y;
+    // 非操作時は透けるリングだけを表示し、ステージの視認性を優先。
+    ctx.globalAlpha = st.id !== null ? 0.4 : 0.2;
+    ctx.fillStyle = '#0b0820'; ctx.strokeStyle = '#eae7ff'; ctx.lineWidth = 1.8;
     ctx.beginPath(); ctx.arc(sx, sy, this.stickR, 0, TAU); ctx.fill(); ctx.stroke();
     let kx = sx, ky = sy;
     if (st.id !== null) {
@@ -231,28 +239,29 @@ const Touch = {
       const m = Math.min(d, this.stickR);
       if (d > 0) { kx = sx + (dx / d) * m; ky = sy + (dy / d) * m; }
     }
-    ctx.globalAlpha = 0.7; ctx.fillStyle = '#fff';
-    ctx.beginPath(); ctx.arc(kx, ky, this.stickR * 0.42, 0, TAU); ctx.fill();
-    // ボタン
+    ctx.globalAlpha = st.id !== null ? 0.78 : 0.5;
+    ctx.fillStyle = '#f5f2ff';
+    ctx.beginPath(); ctx.arc(kx, ky, this.stickR * 0.38, 0, TAU); ctx.fill();
     ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     for (const b of this.buttons) {
       const on = held.has(b.k);
-      ctx.globalAlpha = on ? 0.85 : 0.42;
-      ctx.fillStyle = on ? b.col : '#111';
-      ctx.strokeStyle = b.col; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill(); ctx.stroke();
-      ctx.globalAlpha = 0.95;
+      ctx.globalAlpha = on ? 0.72 : 0.24;
+      ctx.fillStyle = on ? b.col : '#0b0820';
+      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill();
+      ctx.globalAlpha = on ? 0.96 : 0.65;
+      ctx.strokeStyle = b.col; ctx.lineWidth = 1.8;
+      ctx.stroke();
+      ctx.globalAlpha = on ? 1 : 0.84;
       ctx.fillStyle = '#fff';
-      ctx.font = `bold ${Math.round(b.r * (b.label.length > 3 ? 0.36 : 0.48))}px sans-serif`;
+      ctx.font = `bold ${Math.max(10, Math.round(b.r * (b.label.length > 3 ? 0.43 : 0.52)))}px sans-serif`;
       ctx.fillText(b.label, b.x, b.y + 1);
     }
-    // ポーズ
     const pb = this.pauseBtn;
-    ctx.globalAlpha = 0.5; ctx.fillStyle = '#000';
+    ctx.globalAlpha = 0.28; ctx.fillStyle = '#0b0820';
     ctx.beginPath(); ctx.arc(pb.x, pb.y, pb.r, 0, TAU); ctx.fill();
-    ctx.fillStyle = '#fff';
-    ctx.fillRect(pb.x - pb.r * 0.35, pb.y - pb.r * 0.4, pb.r * 0.22, pb.r * 0.8);
-    ctx.fillRect(pb.x + pb.r * 0.13, pb.y - pb.r * 0.4, pb.r * 0.22, pb.r * 0.8);
+    ctx.globalAlpha = 0.75; ctx.fillStyle = '#fff';
+    ctx.fillRect(pb.x - pb.r * 0.33, pb.y - pb.r * 0.42, pb.r * 0.2, pb.r * 0.84);
+    ctx.fillRect(pb.x + pb.r * 0.13, pb.y - pb.r * 0.42, pb.r * 0.2, pb.r * 0.84);
     ctx.restore();
   },
 };
