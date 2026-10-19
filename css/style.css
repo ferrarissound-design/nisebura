@@ -158,15 +158,9 @@ html, body {
 .set-row span { flex: 1; }
 .set-row b { min-width: 64px; text-align: center; }
 
-#rotate-hint {
-  display: none; position: absolute; top: 10px; left: 50%; transform: translateX(-50%); background: rgba(0, 0, 0, 0.75);
-  padding: 6px 14px; border-radius: 20px; font-size: 13px; pointer-events: none; white-space: nowrap;
-}
 /* iPhone縦持ちでもキャラ名・肩書き・操作ボタンを重ねない。
    収まりきらない高さでは画面全体を縦スクロール可能にする。 */
 @media (orientation: portrait) and (max-width: 900px) {
-  /* 対戦中だけ回転ヒントを表示し、メニューやキャラ名には被せない */
-  body.touch:has(.scr.active) #rotate-hint { display: none; }
   #scr-chars {
     overflow-x: hidden;
     overflow-y: auto;

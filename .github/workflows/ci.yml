@@ -15,5 +15,7 @@ jobs:
           node-version: 22
       - name: Syntax check
         run: for f in js/*.js tools/*.js; do node --check "$f"; done
+      - name: Touch HUD layout and input
+        run: node tools/touch-layout-test.js
       - name: Headless CPU battles
         run: node tools/sim.js 30 7
